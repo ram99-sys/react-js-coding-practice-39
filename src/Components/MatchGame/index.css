@@ -10,6 +10,7 @@
   justify-content: space-between;
   padding-left: 40px;
   padding-right: 40px;
+  list-style-type: none;
 }
 .website-logo {
   height: 30px;
@@ -75,6 +76,7 @@
 .image-container {
   padding-top: 80px;
   margin-bottom: 40px;
+  list-style-type: none;
 }
 .image-sizing {
   border: none;
@@ -106,6 +108,8 @@
 .your-score-text {
   color: #ffffff;
   margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 500;
 }
 .score {
   color: #ffffff;
@@ -130,4 +134,37 @@
   color: #ffffff;
   font-size: 24px;
   font-weight: 600;
+}
+
+@media screen and (max-width: 768px) {
+  .score-card-container {
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 100vh;
+    padding-top: 8%;
+  }
+  .games-list-container {
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .trophy {
+    height: 100%;
+    width: 100%;
+  }
+  .score-card-container {
+    padding-top: 20%;
+    height: 85vh;
+  }
+  .games-list-container {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+  .navbar-container {
+    padding-left: 10px;
+    padding-right: 10px;
+    list-style-type: none;
+  }
 }

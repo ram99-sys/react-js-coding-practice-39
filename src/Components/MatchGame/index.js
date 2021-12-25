@@ -7,7 +7,13 @@ import TabItem from '../TabItem'
 import GameItem from '../GameItem'
 
 class MatchGame extends Component {
-  state = {isGameRunning: true, activeTab: [], displayingImages: [], score: 0}
+  state = {
+    isGameRunning: true,
+    activeTab: [],
+    displayingImages: [],
+    score: 0,
+    seconds: 60,
+  }
 
   componentDidMount() {
     const {tabsList} = this.props
@@ -15,6 +21,14 @@ class MatchGame extends Component {
     this.setState({activeTab: tabsList[0].tabId})
     const {imagesList} = this.props
     this.setState({displayingImages: imagesList[0]})
+
+    this.timerInterval = setInterval(() => {
+      this.setState(prevState => ({seconds: prevState.seconds - 1}))
+    }, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerInterval)
   }
 
   updateTab = tabId => {
@@ -35,9 +49,11 @@ class MatchGame extends Component {
     const {imageUrl} = displayingImages
 
     return (
-      <div className="image-container">
-        <img src={imageUrl} alt="match" className="image-sizing" />
-      </div>
+      <ul className="image-container">
+        <li>
+          <img src={imageUrl} alt="match" className="image-sizing" />
+        </li>
+      </ul>
     )
   }
 
@@ -59,6 +75,7 @@ class MatchGame extends Component {
       this.setState({displayingImages: shuffledListItem})
     } else {
       this.setState({isGameRunning: false})
+      clearInterval(this.timerInterval)
     }
   }
 
@@ -94,27 +111,34 @@ class MatchGame extends Component {
   }
 
   resetGame = () => {
+    const {tabsList} = this.props
+    const {imagesList} = this.props
     this.setState({
       isGameRunning: true,
       score: 0,
-      activeTab: [],
+      activeTab: tabsList[0].tabId,
+      displayingImages: imagesList[0],
+      seconds: 60,
     })
+    this.timerInterval = setInterval(() => {
+      this.setState(prevState => ({seconds: prevState.seconds - 1}))
+    }, 1000)
   }
 
   renderScoreCard = () => {
     const {score} = this.state
     return (
-      <div className="score-card-container">
-        <div className="trophy-container">
+      <ul className="score-card-container">
+        <li className="trophy-container">
           <img
             src="https://assets.ccbp.in/frontend/react-js/match-game-trophy.png"
             alt="trophy"
             className="trophy"
           />
-        </div>
-        <h1 className="your-score-text">YOUR SCORE</h1>
+        </li>
+        <p className="your-score-text">YOUR SCORE</p>
         <h1 className="score">{score}</h1>
-        <div className="button-container">
+        <li className="button-container">
           <button
             type="button"
             className="reset-button"
@@ -127,30 +151,41 @@ class MatchGame extends Component {
             />
             <p className="play-again-text">PLAY AGAIN</p>
           </button>
-        </div>
-      </div>
+        </li>
+      </ul>
     )
   }
 
   render() {
-    const {isGameRunning, activeTab, clickedImages} = this.state
+    const {isGameRunning, seconds} = this.state
+    const {tabsList, imagesList} = this.props
     // console.log(activeTab)
     // console.log(clickedImages)
     const {score} = this.state
+    if (seconds === 0) {
+      console.log('clear interval')
+      clearInterval(this.timerInterval)
+      this.setState({
+        isGameRunning: false,
+        activeTab: tabsList[0].tabId,
+        displayingImages: imagesList[0],
+        seconds: 60,
+      })
+    }
 
     return (
       <div className="app-container">
-        <div className="navbar-container">
-          <div className="app-logo">
+        <ul className="navbar-container">
+          <li className="app-logo">
             <img
               src="https://assets.ccbp.in/frontend/react-js/match-game-website-logo.png"
               alt="website logo"
               className="website-logo"
             />
-          </div>
-          <div className="score-timer-container">
+          </li>
+          <li className="score-timer-container">
             <div className="score-container">
-              <h1 className="score-text">Score: </h1>
+              <p className="score-text">Score: </p>
               <p className="score-number">{score}</p>
             </div>
             <div className="timer-container">
@@ -159,10 +194,10 @@ class MatchGame extends Component {
                 alt="timer"
                 className="timer"
               />
-              <p className="timer-number">60 sec</p>
+              <p className="timer-number">{seconds} sec</p>
             </div>
-          </div>
-        </div>
+          </li>
+        </ul>
         <div className="match-game-body-container">
           {isGameRunning ? this.renderGameCard() : this.renderScoreCard()}
         </div>
